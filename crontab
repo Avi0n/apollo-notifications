@@ -1,1 +1,1 @@
-*/5 * * * * python3 /opt/script/notify.py
+*/1 * * * * /opt/venv/bin/python3 notify.py > /proc/1/fd/1 2>/proc/1/fd/2

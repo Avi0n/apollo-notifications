@@ -45,21 +45,23 @@ RUN pip3 install --upgrade pip && pip3 install setuptools wheel && pip3 install 
 
 # Create the container we'll actually ship. We need to copy libolm and any
 # python dependencies that we built above to this container
-FROM python:3-slim
+FROM python:3-slim-bookworm
 ARG DEBIAN_FRONTEND=noninteractive
+ENV PYTHONIOENCODING=utf-8
 
 RUN apt-get update && apt-get install -y python3-venv libolm-dev cron
 COPY --from=build-image /opt/venv /opt/venv
 
-# cron
-RUN touch /var/log/cronlog
-COPY crontab /etc/cron.d/my-cron
-RUN chmod 0644 /etc/cron.d/my-cron
-
-WORKDIR /opt/script
+# Copy script and config
+WORKDIR /root
 COPY notify.py .
 COPY config.yaml .
 
-# Make sure we use the virtualenv
-ENV PATH="/opt/venv/bin:$PATH"
-CMD [ cron && tail -f /var/log/cron.log ]
+# cron
+COPY crontab /etc/cron.d/scriptcron
+RUN chmod 0644 /etc/cron.d/scriptcron
+RUN crontab /etc/cron.d/scriptcron
+RUN touch /var/log/cron.log
+
+# Run cron
+CMD [ "cron", "-f" ]
