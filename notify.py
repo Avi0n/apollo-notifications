@@ -28,6 +28,9 @@ CLIENT_SECRET   = config["CLIENT_SECRET"]
 USERNAME        = config["USERNAME"]
 PASSWORD        = config["PASSWORD"]
 
+# Working dir
+WORKING_DIR     = config["WORKING_DIR"]
+
 if len(KEY) >0:
     totp = pyotp.TOTP(KEY)
 
@@ -43,8 +46,7 @@ class RedditNotifications:
             username=USERNAME
         )
 
-        #homedir = pwd.getpwuid(os.getuid()).pw_dir
-        self.datafile = f"/app/reddit_seen"
+        self.datafile = f"{WORKING_DIR}/reddit_seen"
 
         if os.path.exists(self.datafile):
             self.seen = json.loads(open(self.datafile).read())

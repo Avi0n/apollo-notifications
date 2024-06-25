@@ -10,3 +10,6 @@ CLIENT_SECRET: ""
 # reddit username/password
 USERNAME: ""
 PASSWORD: ""
+
+# Directory where data is stored
+WORKING_DIR: "."
