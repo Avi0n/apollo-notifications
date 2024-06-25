@@ -48,13 +48,18 @@ RUN pip3 install --upgrade pip && pip3 install setuptools wheel && pip3 install 
 FROM python:3-slim
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y python3-venv libolm-dev
+RUN apt-get update && apt-get install -y python3-venv libolm-dev cron
 COPY --from=build-image /opt/venv /opt/venv
 
-WORKDIR /app
+# cron
+RUN touch /var/log/cronlog
+COPY crontab /etc/cron.d/my-cron
+RUN chmod 0644 /etc/cron.d/my-cron
+
+WORKDIR /opt/script
 COPY notify.py .
-#COPY config.yaml .
+COPY config.yaml .
 
 # Make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
-CMD [ "python3", "-u", "notify.py" ]
+CMD [ cron && tail -f /var/log/cron.log ]
