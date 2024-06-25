@@ -4,16 +4,17 @@ import praw
 import pyotp
 import json
 import os
-import pwd
 import prawcore.exceptions
 import time
 import sys
-from pushover import Client
+import requests
 
-# pushover user key
-PUSHOVER_USER   = ''
-# push over app key
-PUSHOVER_APP    = ''
+
+# ntfy server
+NTFY_SERVER     = 'ntfy.sh'
+NTFY_TOPIC      = ''
+
+
 # 2FA secret (if using 2FA)
 KEY             = ''
 # reddit oauth - create "personal use script" app at https://old.reddit.com/prefs/apps/
@@ -38,8 +39,8 @@ class RedditNotifications:
             username=USERNAME
         )
 
-        homedir = pwd.getpwuid(os.getuid()).pw_dir
-        self.datafile = f"{homedir}/.reddit_seen"
+        #homedir = pwd.getpwuid(os.getuid()).pw_dir
+        self.datafile = f"/app/reddit_seen"
 
         if os.path.exists(self.datafile):
             self.seen = json.loads(open(self.datafile).read())
@@ -49,7 +50,6 @@ class RedditNotifications:
                 'comment': {}
             }
 
-        self.pushover = Client(PUSHOVER_USER, api_token=PUSHOVER_APP)
 
 
     def main(self):
@@ -74,18 +74,26 @@ class RedditNotifications:
 
 
     def handle_comment(self, item):
-        url = 'apollo://reddit.com' + item.context
+        #url = 'apollo://reddit.com' + item.context
 
-        self.pushover.send_message(item.body, title=item.submission.title, url=url)
+        requests.post(f"https://{NTFY_SERVER}/{NTFY_TOPIC}",
+            data = item.body,
+            headers={
+                "Title": f"Apollo: {item.submission.title}"
+            })
 
         self.seen['comment'][item.id] = 1
         self.save()
 
 
     def handle_message(self, item):
-        url = 'apollo://reddit.com/message/messages/' + item.id
+        #url = 'apollo://reddit.com/message/messages/' + item.id
 
-        self.pushover.send_message(item.body, title=item.subject, url=url)
+        requests.post(f"https://{NTFY_SERVER}/{NTFY_TOPIC}",
+            data = item.body,
+            headers={
+                "Title": f"Apollo: {item.subject}"
+            })
 
         self.seen['message'][item.id] = 1
         self.save()
