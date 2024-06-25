@@ -10,3 +10,6 @@
 
 # Python venv
 venv
+
+# config
+config.yaml

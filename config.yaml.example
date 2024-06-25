@@ -1,0 +1,12 @@
+# ntfy server
+NTFY_SERVER: "ntfy.sh"
+NTFY_TOPIC: ""
+
+# 2FA secret (if using 2FA)
+KEY: ""
+# reddit oauth - create "personal use script" app at https://old.reddit.com/prefs/apps/
+CLIENT_ID: ""
+CLIENT_SECRET: ""
+# reddit username/password
+USERNAME: ""
+PASSWORD: ""

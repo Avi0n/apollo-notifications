@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import yaml
 import praw
 import pyotp
 import json
@@ -10,19 +11,22 @@ import sys
 import requests
 
 
+with open("config.yaml", "r") as yamlfile:
+    config = yaml.load(yamlfile, Loader=yaml.Loader)
+
 # ntfy server
-NTFY_SERVER     = 'ntfy.sh'
-NTFY_TOPIC      = ''
+NTFY_SERVER     = config["NTFY_SERVER"]
+NTFY_TOPIC      = config["NTFY_TOPIC"]
 
 
 # 2FA secret (if using 2FA)
-KEY             = ''
+KEY             = config["KEY"]
 # reddit oauth - create "personal use script" app at https://old.reddit.com/prefs/apps/
-CLIENT_ID       = ''
-CLIENT_SECRET   = ''
+CLIENT_ID       = config["CLIENT_ID"]
+CLIENT_SECRET   = config["CLIENT_SECRET"]
 # reddit username/password
-USERNAME        = ''
-PASSWORD        = ''
+USERNAME        = config["USERNAME"]
+PASSWORD        = config["PASSWORD"]
 
 if len(KEY) >0:
     totp = pyotp.TOTP(KEY)
@@ -79,7 +83,7 @@ class RedditNotifications:
         requests.post(f"https://{NTFY_SERVER}/{NTFY_TOPIC}",
             data = item.body,
             headers={
-                "Title": f"Apollo: {item.submission.title}"
+                "Title": f"reddit: {item.submission.title}"
             })
 
         self.seen['comment'][item.id] = 1
@@ -92,7 +96,7 @@ class RedditNotifications:
         requests.post(f"https://{NTFY_SERVER}/{NTFY_TOPIC}",
             data = item.body,
             headers={
-                "Title": f"Apollo: {item.subject}"
+                "Title": f"reddit: {item.subject}"
             })
 
         self.seen['message'][item.id] = 1
