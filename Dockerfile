@@ -52,7 +52,7 @@ RUN apt-get update && apt-get install -y python3-venv libolm-dev
 COPY --from=build-image /opt/venv /opt/venv
 
 WORKDIR /app
-COPY main.py .
+COPY notify.py .
 #COPY config.yaml .
 
 # Make sure we use the virtualenv
