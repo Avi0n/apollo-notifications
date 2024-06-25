@@ -1,0 +1,6 @@
+services:
+  reddit-ntfy:
+    build: .
+    container_name: reddit-ntfy
+    volumes:
+      - ./app:/app
