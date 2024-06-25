@@ -83,9 +83,9 @@ class RedditNotifications:
         #url = 'apollo://reddit.com' + item.context
 
         requests.post(f"https://{NTFY_SERVER}/{NTFY_TOPIC}",
-            data = item.body,
+            data = item.body.encode(encoding='utf-8'),
             headers={
-                "Title": f"reddit: {item.submission.title}"
+                "Title": f"reddit: {item.submission.title}".encode(encoding='utf-8')
             })
 
         self.seen['comment'][item.id] = 1
@@ -96,9 +96,9 @@ class RedditNotifications:
         #url = 'apollo://reddit.com/message/messages/' + item.id
 
         requests.post(f"https://{NTFY_SERVER}/{NTFY_TOPIC}",
-            data = item.body,
+            data = item.body.encode(encoding='utf-8'),
             headers={
-                "Title": f"reddit: {item.subject}"
+                "Title": f"reddit: {item.subject}".encode(encoding='utf-8')
             })
 
         self.seen['message'][item.id] = 1
