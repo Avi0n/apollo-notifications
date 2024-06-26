@@ -1,10 +1,7 @@
 # apollo-notifications
 
 A simple python script that polls your reddit inbox for new comments/messages
-and then sends notifications via Pushover with the urls formatted for Apollo.
-
-When opening these notifications the links will automatically redirect to the
-Apollo app.
+and then sends notifications via ntfy.
 
 ## install dependencies
 
@@ -18,11 +15,13 @@ pip3 install -r requirements.txt
 
 note the client id/secret
 
-2. buy the awesome pushover app for iOS and make an account here: https://pushover.net
+2. go to https://ntfy.sh and create a topic
 
-3. create an application for apollo on https://pushover.net and give it a cool
-Apollo icon
+3. download the ntfy app and subscribe to the topic you created
 
-note your pushover account user id and the key for the app you created there
+4. copy `config.yaml.example` and rename the new file to `config.yaml`
 
-4. edit the code and change the parameters as per comments
+5. Edit `config.yaml` with the appropriate values
+
+
+Note: On first run, you'll get notified for almost every message in your inbox. After this initial run, you'll only get notified if you have a new reply/DM
