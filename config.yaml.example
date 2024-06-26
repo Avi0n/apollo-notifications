@@ -11,5 +11,7 @@ CLIENT_SECRET: ""
 USERNAME: ""
 PASSWORD: ""
 
-# Directory where data is stored
-WORKING_DIR: "."
+# Directory where reddit_seen is stored
+# Note: This will change the directory inside the Docker container. If you change this,
+# make sure to update docker-compose appropriately.
+WORKING_DIR: "/app"
