@@ -5,14 +5,14 @@
 #
 
 ##
-## Creating a builder container
+## Create build image
 ##
 
 # We use an initial docker container to build all of the runtime dependencies,
 # then transfer those dependencies to the container we're going to ship,
 # before throwing this one away
 
-FROM python:3-bookworm AS build-image
+FROM python:3-slim-bookworm AS build-image
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
@@ -40,17 +40,18 @@ COPY requirements.txt .
 RUN pip3 install --upgrade pip && pip3 install setuptools wheel && pip3 install -r requirements.txt
 
 ##
-## Creating the runtime container
+## Create the runtime container
 ##
 
-# Create the container we'll actually ship. We need to copy libolm and any
-# python dependencies that we built above to this container
 FROM python:3-slim-bookworm
 ARG DEBIAN_FRONTEND=noninteractive
 ENV PYTHONIOENCODING=utf-8
 
 RUN apt-get update && apt-get install -y python3-venv libolm-dev cron
+
+# Copy venv from build-image
 COPY --from=build-image /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy script and config
 WORKDIR /root
